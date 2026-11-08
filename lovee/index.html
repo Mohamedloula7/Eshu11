@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>For Eshu </title>
+    <style>
+      :root {
+        --primary-color: #670425;
+        --secondary-color: #d52433;
+        --bg-color: #fce4ec;
+        --text-color: #780522;
+        --card-bg: rgba(255, 255, 255, 0.95);
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background-color: var(--bg-color);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        color: var(--text-color);
+        overflow-x: hidden;
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-in {
+        animation: fadeInUp 0.8s ease-out forwards;
+      }
+      .heart-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+      }
+      .heart {
+        position: absolute;
+        bottom: -50px;
+        background-color: rgba(255, 64, 129, 0.4);
+        width: 25px;
+        height: 25px;
+        transform: rotate(45deg);
+        animation: floatUp 12s linear infinite;
+      }
+      .heart::before,
+      .heart::after {
+        content: "";
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        background-color: inherit;
+        border-radius: 50%;
+      }
+      .heart::before {
+        top: -12.5px;
+        left: 0;
+      }
+      .heart::after {
+        left: -12.5px;
+        top: 0;
+      }
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0) rotate(45deg) scale(0.5);
+          opacity: 0.8;
+        }
+        100% {
+          transform: translateY(-120vh) rotate(45deg) scale(1.5);
+          opacity: 0;
+        }
+      }
+      #login-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #f8bbd0, #f48fb1);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .login-box {
+        background: white;
+        padding: 40px 30px;
+        border-radius: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 400px;
+      }
+      .pass-input {
+        padding: 15px;
+        border-radius: 50px;
+        border: 2px solid var(--secondary-color);
+        width: 80%;
+        text-align: center;
+        font-size: 1.3rem;
+        outline: none;
+        margin-bottom: 20px;
+        transition: 0.3s;
+      }
+      .pass-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 10px rgba(233, 30, 99, 0.2);
+      }
+      .enter-btn {
+        padding: 12px 50px;
+        background: linear-gradient(
+          to right,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3);
+        transition: 0.3s;
+      }
+      .enter-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(233, 30, 99, 0.5);
+      }
+      .error-msg {
+        color: #d32f2f;
+        margin-top: 20px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        min-height: 1.5em;
+        font-family: "Tajawal", sans-serif;
+        direction: rtl;
+      }
+      #main-content {
+        display: none;
+      }
+      .hero {
+        background: linear-gradient(135deg, var(--primary-color), #c2185b);
+        color: white;
+        padding: 80px 20px 120px 20px;
+        border-bottom-left-radius: 50% 40px;
+        border-bottom-right-radius: 50% 40px;
+        margin-bottom: -80px;
+        position: relative;
+        z-index: 1;
+      }
+      .hero h1 {
+        margin: 0;
+        font-size: 3.5rem;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      }
+      .hero-name {
+        font-size: 5rem;
+        display: block;
+        margin: 10px 0;
+        font-weight: 900;
+        letter-spacing: 2px;
+      }
+
+      .container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 0 20px 50px 20px;
+        position: relative;
+        z-index: 2;
+      }
+      .countdown-box {
+        background: var(--card-bg);
+        width: 90%;
+        max-width: 550px;
+        margin: 0 auto 40px auto;
+        padding: 25px;
+        border-radius: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+      }
+      .timer-display {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+      }
+      .time-unit {
+        background-color: #ffebee;
+        padding: 15px 10px;
+        border-radius: 15px;
+        min-width: 65px;
+        color: var(--primary-color);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+      }
+      .time-unit span {
+        display: block;
+        font-size: 1.8rem;
+        font-weight: 900;
+        line-height: 1;
+      }
+      .time-unit small {
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-top: 5px;
+        display: block;
+      }
+      nav {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 40px;
+      }
+      .nav-item {
+        background-color: var(--card-bg);
+        color: var(--primary-color);
+        padding: 12px 25px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: bold;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: 0.4s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .nav-item:hover {
+        transform: translateY(-5px) scale(1.05);
+        background-color: var(--primary-color);
+        color: white;
+      }
+      .card {
+        background: var(--card-bg);
+        border-radius: 25px;
+        padding: 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        text-align: left;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: transform 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+      }
+      .card h2 {
+        color: var(--primary-color);
+        border-bottom: 3px dashed var(--secondary-color);
+        display: inline-block;
+        padding-bottom: 10px;
+        margin-top: 0;
+        font-size: 1.8rem;
+      }
+      .gallery-slider {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 15px;
+        padding-bottom: 20px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .gallery-item {
+        scroll-snap-align: center;
+        flex: 0 0 85%;
+        max-width: 400px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border: 3px solid white;
+      }
+      .gallery-item img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        display: block;
+      }
+      .gallery-slider::-webkit-scrollbar {
+        display: none;
+      }
+      .video-container video {
+        width: 100%;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border: 3px solid white;
+        outline: none;
+      }
+      .message-text {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: #5c0034;
+        white-space: pre-line;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="heart-bg" id="heart-bg"></div>
+    <div id="login-screen">
+      <div class="login-box animate-in">
+        <h2
+          style="
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+          "
+        >
+          Welcome Eshu 
+        </h2>
+        <p style="margin-bottom: 25px; font-size: 1.2rem; opacity: 0.8">
+          To enter, type our special date ❤️
+        </p>
+
+        <input
+          type="text"
+          id="passwordInput"
+          class="pass-input"
+          placeholder="خمني يا Eshu "
+        />
+        <button class="enter-btn" onclick="checkPassword()">Unlock❤️</button>
+
+        <div id="errorContainer" style="min-height: 30px"></div>
+      </div>
+    </div>
+    <div id="main-content">
+      <div class="hero animate-in">
+        <h1>Especially For</h1>
+        <span class="hero-name">Eshu </span>
+        <p style="font-size: 1.3rem; opacity: 0.9">
+          My favorite person in the world
+        </p>
+      </div>
+
+      <div class="container">
+        <div class="countdown-box animate-in" style="animation-delay: 0.2s">
+          <h3
+            style="
+              margin-top: 0;
+              color: var(--primary-color);
+              text-align: center;
+            "
+          >
+            New Year Countdown 🎉
+          </h3>
+          <div class="timer-display" id="timer">
+            <div class="time-unit">
+              <span id="days">00</span><small>Days</small>
+            </div>
+            <div class="time-unit">
+              <span id="hours">00</span><small>Hours</small>
+            </div>
+            <div class="time-unit">
+              <span id="minutes">00</span><small>Mins</small>
+            </div>
+            <div class="time-unit">
+              <span id="seconds">00</span><small>Secs</small>
+            </div>
+          </div>
+          <p
+            id="timer-msg"
+            style="
+              margin-bottom: 0;
+              color: var(--text-color);
+              margin-top: 15px;
+              text-align: center;
+              font-weight: bold;
+            "
+          >
+            Time left until 2026 ❤️
+          </p>
+        </div>
+        <div class="countdown-box animate-in" style="animation-delay: 0.3s">
+          <h3
+            style="
+              margin-top: 0;
+              color: var(--primary-color);
+              text-align: center;
+            "
+          >
+            From The Day We Talked ❤️
+          </h3>
+        <nav class="animate-in" style="animation-delay: 0.4s">
+          <a href="#message" class="nav-item">💌 Message</a>
+          <a href="#gallery" class="nav-item">📸 Gallery</a>
+          <a href="#video" class="nav-item">🎥 Video</a>
+          <a href="#music" class="nav-item">🎵 Music</a>
+        </nav>
+        <section
+          id="message"
+          class="card animate-in"
+          style="animation-delay: 0.6s"
+        >
+          <h2>My Message 💌</h2>
+          <div class="message-text">
+            في الطب بيقولوا إن السيروتونين والدوبامين هما هرمونات السعادة
+            ،بس أنا اكتشفت إن الكلام معاكي يا ايوشه بيعمل نفس المفعول بالظبط
+            ربنا يوفقك في دراستك ويسهل عليكي كل صعب،
+            ويجعل كل أيامك خفيفة ومبهجة زي روحك.
+            ربنا يجبر بخاطرك يااارب ي عسل و اشوفك اسعد دكتوره ف العالم يااارب
+            يومك جميل يا دكتورة ايوشه
+          </div>
+        </section>
+        <section
+          id="gallery"
+          class="card animate-in"
+          style="animation-delay: 0.8s"
+        >
+          <h2 style="text-align: center; display: block">Our Memories 📸</h2>
+          <p style="text-align: center; margin-bottom: 20px; opacity: 0.7">
+          </p>
+          <div class="gallery-slider">
+            <div class="gallery-item">
+              <img src="Image 1.jpeg" alt="Photo 1" />
+            </div>
+          </div>
+        </section>
+        <section id="video" class="card animate-in" style="animation-delay: 1s">
+          <h2>Special Video 🎥</h2>
+          <div class="video-container" style="margin-top: 20px">
+        <p style="text-align: center; margin-bottom: 20px; opacity: 0.7">
+            نا بحب الفيد دا ف قولت احطة اكيد بتحبيه برضو 
+        </p>
+            <video controls playsinline>
+              <source src="vid.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </section>
+        <section
+          id="music"
+          class="card animate-in"
+          style="animation-delay: 1.2s"
+        >
+          <h2>Our Song 🎧</h2>
+          <div style="margin-top: 15px">
+            <divstyle="margin-bottom: 8px; font-weight: bold; font-size: 1.1rem">
+            <p style="text-align: center; margin-bottom: 20px; opacity: 0.7">
+            </p>
+            </divstyle=>
+            <audio controls style="width: 100%; border-radius: 50px">
+              <source
+                src="شفت كلام - دندنها.mp3"
+                type="audio/mpeg"
+              />
+            </audio>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script>
+      const funnyMessages = [
+        "لأ مش ده، حاولي تاني يا ايوشه  😂",
+        "إيه ده؟ نسيتي التاريخ ايوشه ولا إيه؟ 😉",
+        "غلط! ركزي شوية يا فنانة 🎨",
+        "شكلك كده مش ملوكتي الحقيقية 👀",
+        "لا لا، مش هو ده.. فكري تاني 🤔",
+        "مش هفتحلك غير لما تكتبي الصح 😌",
+      ];
+      function checkPassword() {
+        var input = document.getElementById("passwordInput").value;
+        var correctPassword = "1/4/2007"; // <--- [Change Password Here]
+        var errorContainer = document.getElementById("errorContainer");
+
+        if (input === correctPassword) {
+          document.getElementById("login-screen").style.display = "none";
+          document.getElementById("main-content").style.display = "block";
+          startCountdown();
+          startLoveCounter();
+          createHearts();
+        } else {
+          var randomMessage =
+            funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+          errorContainer.innerHTML =
+            '<p class="error-msg animate-in">' + randomMessage + "</p>";
+          document.getElementById("passwordInput").value = "";
+        }
+      }
+      function startCountdown() {
+        var currentYear = new Date().getFullYear();
+        var nextYear =
+          new Date().getMonth() === 11 && new Date().getDate() === 31
+            ? currentYear + 1
+            : currentYear;
+        var countDownDate = new Date(
+          "Dec 31, " + nextYear + " 23:59:59",
+        ).getTime();
+        var x = setInterval(function () {
+          var now = new Date().getTime();
+          var distance = countDownDate - now;
+          var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          var hours = Math.floor(
+            (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+          );
+          var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          document.getElementById("days").innerText =
+            days < 10 ? "0" + days : days;
+          document.getElementById("hours").innerText =
+            hours < 10 ? "0" + hours : hours;
+          document.getElementById("minutes").innerText =
+            minutes < 10 ? "0" + minutes : minutes;
+          document.getElementById("seconds").innerText =
+            seconds < 10 ? "0" + seconds : seconds;
+          if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("timer").innerHTML =
+              "<h2 style='color:var(--primary-color)'>Happy New Year, Laila! 🎆</h2>";
+          }
+        }, 1000);
+      }
+      // 4. Floating Hearts
+      function createHearts() {
+        const container = document.getElementById("heart-bg");
+        for (let i = 0; i < 35; i++) {
+          const heart = document.createElement("div");
+          heart.classList.add("heart");
+          heart.style.left = Math.random() * 100 + "vw";
+          heart.style.animationDuration = Math.random() * 8 + 7 + "s";
+          heart.style.animationDelay = Math.random() * 5 + "s";
+          heart.style.opacity = Math.random() * 0.5 + 0.3;
+          container.appendChild(heart);
+        }
+      }
+      function startLoveCounter() {
+const startDate = new Date("2026-08-23T01:47:00").getTime();
+
+        setInterval(function () {
+          const now = new Date().getTime();
+          const diff = now - startDate;
+
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor(
+            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+          );
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+          document.getElementById("love-days").innerText = days;
+          document.getElementById("love-hours").innerText =
+            hours < 10 ? "0" + hours : hours;
+          document.getElementById("love-minutes").innerText =
+            minutes < 10 ? "0" + minutes : minutes;
+          document.getElementById("love-seconds").innerText =
+            seconds < 10 ? "0" + seconds : seconds;
+        }, 1000);
+      }
+    </script>
+  </body>
+</html>
